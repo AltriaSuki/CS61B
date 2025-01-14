@@ -72,7 +72,7 @@ public class SpeciesListStage implements AdventureStage {
             String input = in.readLine();
             List<String> user;
             if (input.isEmpty()) {
-                user = new ArrayList<>();
+                break;
             } else {
                 user = Arrays.asList(input.toLowerCase().split(" *, *"));
             }
