@@ -99,57 +99,41 @@ public class BSTMap<K extends Comparable<K>,V>implements Map61B<K,V>{
         return min(n.left);
     }
 
-    private V remove(Node n,K key){
+    private V remove(Node parent,Node n,K key){
         if(n==null){
             return null;
         }
         if(key.compareTo(n.key)<0){
-            return remove(n.left,key);
+            return remove(n,n.left,key);
         }else if(key.compareTo(n.key)>0){
-            return remove(n.right,key);
+            return remove(n,n.right,key);
         }else{
-            if(n==root){
-                if(n.left==null){
-                    V value=n.value;
-                    root=n.right;
-                    return value;
-                }else if(n.right==null){
-                    V value=n.value;
-                    root=n.left;
-                    return value;
-                }else{
-                    V value=n.value;
-                    Node temp=min(n.right);
-                    n.key=temp.key;
-                    n.value=temp.value;
-                    remove(n.right,temp.key);
-                    return value;
-                }
+            V value=n.value;
+            if(n.left==null&&n.right==null){
+                if(n==root)root=null;
+                else if(parent.left==n)parent.left=null;
+                else parent.right=null;
+            }else if(n.left==null){
+                if(n==root)root=n.right;
+                else if(parent.left==n)parent.left=n.right;
+                else parent.right=n.right;
+            }else if(n.right==null){
+                if(n==root)root=n.left;
+                else if(parent.left==n)parent.left=n.left;
+                else parent.right=n.left;
             }else{
-                if(n.left==null){
-                    V value=n.value;
-                    n=n.right;
-                    return value;
-                }else if(n.right==null){
-                    V value=n.value;
-                    n=n.left;
-                    return value;
-                }else{
-                    V value=n.value;
-                    Node temp=min(n.right);
-                    n.key=temp.key;
-                    n.value=temp.value;
-                    remove(n.right,temp.key);
-                    return value;
-                }
+                Node minNode=min(n.right);
+                n.key=minNode.key;
+                n.value=minNode.value;
+                remove(n,n.right,minNode.key);
             }
-            
+            return value;
         }
     }
 
     public V remove(K key){
         size--;
-        return remove(root,key);
+        return remove(null,root,key);
     }
 
     public Iterator<K> iterator(){
