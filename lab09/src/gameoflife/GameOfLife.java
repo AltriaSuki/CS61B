@@ -240,12 +240,49 @@ public class GameOfLife {
         // TODO: Implement this method so that the described transitions occur.
         // TODO: The current state is represented by TETiles[][] tiles and the next
         // TODO: state/evolution should be returned in TETile[][] nextGen.
-
-
-
-
+        for(int i=0;i<tiles.length;i++){
+            for(int j=0;j<tiles[0].length;j++){
+                int count=countNeighbors(tiles, i, j);
+                if(isCell(tiles[i][j])){
+                    if(count<2){
+                        nextGen[i][j]=Tileset.NOTHING;
+                    }else if(count==2 || count==3){
+                        nextGen[i][j]=Tileset.CELL;
+                    }else{
+                        nextGen[i][j]=Tileset.NOTHING;
+                    }
+                }else{
+                    if(count==3){
+                        nextGen[i][j]=Tileset.CELL;
+                    }
+                }
+            }
+        }
         // TODO: Returns the next evolution in TETile[][] nextGen.
-        return null;
+        return nextGen;
+    }
+
+    private boolean isCell(TETile tile){
+        return tile == Tileset.CELL;
+    }
+
+    private int countNeighbors(TETile[][] tiles,int x,int y){
+        int count=0;
+        for(int i=-1;i<=1;i++){
+            for(int j=-1;j<=1;j++){
+                if(i==0 && j==0){
+                    continue;
+                }
+                int x1=x+i;
+                int y1=y+j;
+                if(x1>=0 && x1<tiles.length && y1>=0 && y1<tiles[0].length){
+                    if(isCell(tiles[x1][y1])){
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     /**
@@ -275,11 +312,19 @@ public class GameOfLife {
         // TODO: use the provided FileUtils functions to help you. Make sure
         // TODO: the orientation is correct! Each line in the board should
         // TODO: end with a new line character.
-
-
-
-
-
+        StringBuffer content=new StringBuffer();
+        content.append(width).append(" ").append(height).append("\n");
+        for(int j=currentState[0].length-1;j>=0;j--){
+            for(int i=0;i<currentState.length;i++){
+                if(isCell(currentState[i][j])){
+                    content.append("1");
+                }else{
+                    content.append("0");
+                }
+            }
+            content.append("\n");
+        }
+        FileUtils.writeFile(SAVE_FILE,content.toString());
     }
 
     /**
@@ -288,24 +333,40 @@ public class GameOfLife {
      */
     public TETile[][] loadBoard(String filename) {
         // TODO: Read in the file.
+        String content=FileUtils.readFile(filename);
 
         // TODO: Split the file based on the new line character.
-
+        String [] lines=content.split("\n");
         // TODO: Grab and set the dimensions from the first line.
+        String [] dimensions=lines[0].split(" ");
+        int width=Integer.parseInt(dimensions[0]);
+        int height=Integer.parseInt(dimensions[1]);
 
         // TODO: Create a TETile[][] to load the board from the file into
         // TODO: and any additional variables that you think might help.
+        TETile[][] tiles=new TETile[width][height];
+
 
 
         // TODO: Load the state of the board from the given filename. You can
         // TODO: use the provided builder variable to help you and FileUtils
         // TODO: functions. Make sure the orientation is correct!
+        for(int j=1;j<lines.length;j++){
+            String line=lines[j];
+            for(int i=0;i<line.length();i++){
+                if(line.charAt(i)=='1'){
+                    tiles[i][j-1]=Tileset.CELL;
+                }else{
+                    tiles[i][j-1]=Tileset.NOTHING;
+                }
+            }
+        }
 
 
 
 
         // TODO: Return the board you loaded. Replace/delete this line.
-        return null;
+        return tiles;
     }
 
     /**
