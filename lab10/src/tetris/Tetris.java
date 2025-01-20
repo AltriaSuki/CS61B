@@ -160,12 +160,14 @@ public class Tetris {
                 }
             }
             if(isFull){
+
                 linesCleared++;
                 for(int k=i;k<tiles[0].length-1;k++){
                     for(int j=0;j<tiles.length;j++){
                         tiles[j][k]=tiles[j][k+1];
                     }
                 }
+                i--;
             }
         }
 
@@ -187,7 +189,6 @@ public class Tetris {
         // TODO: Set up your game loop. The game should keep running until the game is over.
         // Use helper methods inside your game loop, according to the spec description.
         while(!isGameOver()){
-            System.out.println("gameover:"+isGameOver());
             renderBoard();
             updateBoard();
             if(currentTetromino==null){
@@ -197,10 +198,6 @@ public class Tetris {
             
             renderScore();
         }
-        System.out.println("gameover:"+isGameOver());
-
-
-
     }
 
     /**
